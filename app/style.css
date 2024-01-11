@@ -1,0 +1,64 @@
+.flip-card {
+    position: relative;
+    color: red;
+    display: inline-flex;
+    flex-direction: column;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .2);
+    border-radius: .1em;
+}
+
+.top, .bottom, .flip-card.flip::after,
+.flip-card.flip::before {
+    height: .75em;
+    line-height: 1;
+    padding: .25em;
+    overflow: hidden;
+}
+
+.top,
+.flip-card.flip::after{
+    background-color: aliceblue;
+    border-top-right-radius: .1em;
+    border-top-left-radius: .1em;
+
+}
+
+.top {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.bottom,
+.flip-card.flip::before {
+    background-color: white;
+    display: flex;
+    align-items: flex-end;
+    border-bottom-right-radius: .1em;
+    border-bottom-left-radius: .1em;
+}
+
+.flip-card.flip::before {
+    position: absolute;
+    content: "5";
+    width: 100%;
+    animation: flip-down 250ms ease-in-out;
+}
+
+@keyframes flip-down {
+    100% {
+        transform: rotateX(90deg);
+    }
+}
+
+.flip-card.flip::after {
+    position: absolute;
+    content: "5";
+    width: 100%;
+    animation: flip-bottom 250ms ease-in;
+    transform-origin: top;
+}
+
+@keyframes flip-bottom {
+    100% {
+        transform: rotateX(0deg);
+    }
+}
