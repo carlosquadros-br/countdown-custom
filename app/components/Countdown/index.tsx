@@ -2,116 +2,95 @@
 import React, { useState, useEffect } from "react";
 
 const Countdown: React.FC = () => {
-  const [data, setData] = useState({
-    days: 3,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+  const [time, setTime] = useState({
+    daysTens: 2,
+    daysOnes: 2,
+    hoursTens: 2,
+    hoursOnes: 4,
+    minutesTens: 0,
+    minutesOnes: 0,
+    secondsTens: 0,
+    secondsOnes: 0,
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setData((prevData) => {
-        const { days, hours, minutes, seconds } = prevData;
-        let updatedDays = days;
-        let updatedHours = hours;
-        let updatedMinutes = minutes;
-        let updatedSeconds = seconds;
+    const countToDate = new Date().setHours(new Date().getHours() + 24);
+    let previousTimeBetweenDates;
 
-        if (seconds > 0) {
-          updatedSeconds--;
-        } else {
-          if (minutes > 0) {
-            updatedMinutes--;
-            updatedSeconds = 59;
-          } else {
-            if (hours > 0) {
-              updatedHours--;
-              updatedMinutes = 59;
-              updatedSeconds = 59;
-            } else {
-              if (days > 0) {
-                updatedDays--;
-                updatedHours = 23;
-                updatedMinutes = 59;
-                updatedSeconds = 59;
-              } else {
-                clearInterval(timer);
-              }
-            }
-          }
-        }
+    const interval = setInterval(() => {
+      const currentDate = new Date();
+      const timeBetweenDates = Math.floor(
+        (countToDate - currentDate.getTime()) / 1000
+      );
+      flipAllCards(timeBetweenDates);
+      flipAllCards(timeBetweenDates);
 
-        return {
-          days: updatedDays,
-          hours: updatedHours,
-          minutes: updatedMinutes,
-          seconds: updatedSeconds,
-        };
-      });
-    }, 1000);
+      previousTimeBetweenDates = timeBetweenDates;
+    }, 250);
 
     return () => {
-      clearInterval(timer);
+      clearInterval(interval);
     };
   }, []);
 
-  useEffect(() => {
-    if (
-      data.days === 0 &&
-      data.hours === 0 &&
-      data.minutes === 0 &&
-      data.seconds === 0
-    ) {
-      console.log("Happy!");
-    }
-  }, [data]);
+  const flipAllCards = (time: number) => {
+    const seconds = time % 60;
+    const minutes = Math.floor(time / 60) % 60;
+    const hours = Math.floor(time / 3600);
+
+    flip("hoursTens", Math.floor(hours / 10));
+    flip("hoursOnes", hours % 10);
+    flip("minutesTens", Math.floor(minutes / 10));
+    flip("minutesOnes", minutes % 10);
+    flip("secondsTens", Math.floor(seconds / 10));
+    flip("secondsOnes", seconds % 10);
+  };
+
+  const flip = (card: string, newNumber: number) => {
+    setTime((prevTime) => ({
+      ...prevTime,
+      [card]: newNumber,
+    }));
+  };
 
   return (
-    <div className="bg-white flex justify-center min-h-[10vh]">
-      <div className="flex flex-row gap-5">
-        <div className="flex flex-col text-center text-xl mt-5">
-          <span className="top">2</span>
-          <span className="top-back">
-            <span>2</span>
-          </span>
-          <span className="text-gray-600">Días</span>
-        </div>
-        <div className="flex flex-col  text-center text-xl mt-5">
-          <span className="text-gray-900 mask-image: url('https://example.com/calendar-mask.png');">
-            {data.hours}
-          </span>
-          <span className="text-gray-900 mask-image: url('https://example.com/calendar-mask.png');">
-            {data.hours}
-          </span>
-          <span className="text-gray-600">Horas</span>
-        </div>
-        <div className="flex flex-col  text-center text-xl mt-5">
-          <span className="text-gray-900 mask-image: url('https://example.com/calendar-mask.png');">
-            {data.minutes}
-          </span>
-          <span className="text-gray-600">Minutos</span>
-        </div>
-        <div className="flex flex-col  text-center text-xl mt-5">
-          <span className="text-gray-900 mask-image: url('https://example.com/calendar-mask.png');">
-            {data.seconds}
-          </span>
-          <span className="text-gray-600">Segundos</span>
-        </div>
-        <div className="flex flex-col text-center text-xl mt-5">
-          {/* <div className="figure sec sec-1">
-            <span className="top">0</span>
-            <span className="top-back">
-              <span>0</span>
-            </span>
-            <span className="bottom">0</span>
-            <span className="bottom-back">
-              <span>0</span>
-            </span>
-          </div> */}
+    <div className="container">
+      <div className="container-segment">
+        <div className="segment-title">Hours</div>
+        <div className="segment">
           <div className="flip-card">
-            <div className="top">5</div>
-            <div className="bottom">5</div>
+            <div className="top">{time.hoursTens}</div>
+            <div className="bottom">{time.hoursTens}</div>
+          </div>
+          <div className="flip-card">
+            <div className="top">{time.hoursOnes}</div>
+            <div className="bottom">{time.hoursOnes}</div>
+          </div>
+        </div>
+      </div>
+      <div className="container-segment">
+        <div className="segment-title">Minutes</div>
+        <div className="segment">
+          <div className="flip-card">
+            <div className="top">{time.minutesTens}</div>
+            <div className="bottom">{time.minutesTens}</div>
+          </div>
+          <div className="flip-card">
+            <div className="top">{time.minutesOnes}</div>
+            <div className="bottom">{time.minutesOnes}</div>
+          </div>
+        </div>
+      </div>
+      <div className="container-segment">
+        <div className="segment-title">Seconds</div>
+        <div className="segment">
+          <div className="flip-card">
+            <div className="top">{time.secondsTens}</div>
+            <div className="bottom">{time.secondsTens}</div>
+          </div>
+          <div className="flip-card">
+            <div className="top">{time.secondsOnes}</div>
+            <div className="bottom">{time.secondsOnes}</div>
           </div>
         </div>
       </div>
